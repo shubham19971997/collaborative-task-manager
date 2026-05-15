@@ -4,17 +4,18 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/jwt";
+import { existingUser } from "../repositories/userRepository";
 
 export const registerUser = async (
   email: string,
   name: string,
   password: string
 ) => {
-  const existingUser = await prisma.user.findUnique({
-    where: { email },
-  });
+  // const existingUser = await prisma.user.findUnique({
+  //   where: { email },
+  // });
 
-  if (existingUser) {
+  if (existingUser(email)) {
     throw new Error("User already exists");
   }
 
