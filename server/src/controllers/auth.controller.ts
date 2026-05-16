@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { registerUser } from "../services/auth.service";
-import { registerSchema } from "../utils/validation";
+import { registerUser, logInUser } from "../services/auth.service";
+import { registerSchema, logInSchema } from "../utils/validation";
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -19,3 +19,25 @@ export const register = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const login = async (req: Request, res: Response) =>{
+  try{
+    const parsed = logInSchema.parse(req.body);
+
+    const result = await logInUser(
+      parsed.email,
+      parsed.password
+    )
+
+    return res.status(200).json({
+      success: 'true',
+      message: "Login successful",
+      result
+    })
+
+  }catch(error:any){
+    res.status(400).json({
+      message: error.message
+    })
+  }
+}
