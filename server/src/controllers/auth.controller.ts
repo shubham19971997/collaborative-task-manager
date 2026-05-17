@@ -41,3 +41,7 @@ export const login = async (req: Request, res: Response) =>{
     })
   }
 }
+
+export const logout = () =>{}
+export const refresh = () =>{}
+export const me = () =>{}

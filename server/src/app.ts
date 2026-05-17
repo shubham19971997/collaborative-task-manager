@@ -5,7 +5,6 @@ import authRoutes from "./routes/auth.routes";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
-
 const app = express();
 
 app.use(cors());
@@ -17,10 +16,14 @@ app.get("/", (_req, res) => {
 
 const PORT = process.env.PORT || 3001;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
+// app.use('/api/workspaces', workspaceRoutes)
+// app.use('/api/boards',     boardRoutes)
+// app.use('/api/columns',    columnRoutes)
+// app.use('/api/cards',      cardRoutes)
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
