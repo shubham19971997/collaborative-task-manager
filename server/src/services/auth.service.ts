@@ -5,6 +5,7 @@ import {
   generateRefreshToken,
 } from "../utils/jwt";
 import { existingUser } from "../repositories/userRepository";
+import jwt from "jsonwebtoken";
 
 export const registerUser = async (
   email: string,
@@ -68,3 +69,47 @@ export const logInUser = async(email: string, password: string) =>{
   return { accessToken, refreshToken, user };
 
 }
+
+export const refreshAccessToken = async (token: string) => {
+  const decoded = jwt.verify(
+    token,
+    process.env.JWT_REFRESH_SECRET!
+  ) as { userId: string };
+
+  const tokens = await prisma.refreshToken.findMany({
+    where: {
+      userId: decoded.userId,
+      expiresAt: { gt: new Date() },
+    },
+  });
+
+  let matched = null;
+
+  for (const t of tokens) {
+    const match = await bcrypt.compare(token, t.token);
+    if (match) {
+      matched = t;
+      break;
+    }
+  }
+
+  if (!matched) {
+    throw new Error("Invalid token");
+  }
+
+  await prisma.refreshToken.delete({ where: { id: matched.id } });
+
+  const newRefreshToken = generateRefreshToken(decoded.userId);
+
+  await prisma.refreshToken.create({
+    data: {
+      token: await bcrypt.hash(newRefreshToken, 10),
+      userId: decoded.userId,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    },
+  });
+
+  const accessToken = generateAccessToken(decoded.userId);
+
+  return { accessToken, newRefreshToken };
+};
