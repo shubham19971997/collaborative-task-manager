@@ -44,13 +44,11 @@ export const registerUser = async (
 export const logInUser = async(email: string, password: string) =>{
 
   const user = await existingUser(email);
-
   if(!user || !user.passwordHash){
     throw new Error("Invalid credentials")
   }
 
   const isMatch = await bcrypt.compare(password, user.passwordHash);
-
   if(!isMatch){
     throw new Error("Invalid credentials")
   }
@@ -65,12 +63,12 @@ export const logInUser = async(email: string, password: string) =>{
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     },
   });
-
   return { accessToken, refreshToken, user };
 
 }
 
 export const refreshAccessToken = async (token: string) => {
+  
   const decoded = jwt.verify(
     token,
     process.env.JWT_REFRESH_SECRET!
@@ -98,7 +96,6 @@ export const refreshAccessToken = async (token: string) => {
   }
 
   await prisma.refreshToken.delete({ where: { id: matched.id } });
-
   const newRefreshToken = generateRefreshToken(decoded.userId);
 
   await prisma.refreshToken.create({
