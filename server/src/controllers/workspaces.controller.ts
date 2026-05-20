@@ -1,7 +1,13 @@
 import { Request, Response } from "express";
 
 
-export const getWorkspaces = () => {};
+export const getWorkspaces = (req: Request, res:Response) => {
+    try{
+        // const parsed = registerSchema.parse(req.body);
+    } catch{
+
+    }
+};
 export const createWorkspace = () => {};
 export const getWorkspaceDetails = () => {};
 export const updateWorkspaceDetails = () => {};
