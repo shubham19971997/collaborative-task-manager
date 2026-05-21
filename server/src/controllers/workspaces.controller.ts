@@ -1,12 +1,24 @@
 import { Request, Response } from "express";
+import {getUserWorkspaces} from '../services/workspaces.service';
 
 
-export const getWorkspaces = (req: Request, res:Response) => {
+export const getWorkspaces = async(req: Request, res:Response) => {
     try{
-        // const parsed = registerSchema.parse(req.body);
-    } catch{
 
-    }
+        const userId = req.user.userId;
+
+        const workspaces = await getUserWorkspaces(userId);
+
+        
+        return res.status(200).json({
+            success: true,
+            data: workspaces,
+          });
+    } catch (error: any) {
+        res.status(400).json({
+          message: error.message,
+        });
+      }
 };
 export const createWorkspace = () => {};
 export const getWorkspaceDetails = () => {};
