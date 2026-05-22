@@ -5,11 +5,9 @@ import {getUserWorkspaces} from '../services/workspaces.service';
 export const getWorkspaces = async(req: Request, res:Response) => {
     try{
 
-        const userId = req.user.userId;
-
+        const userId = req.user?.userId;
         const workspaces = await getUserWorkspaces(userId);
 
-        
         return res.status(200).json({
             success: true,
             data: workspaces,
