@@ -4,8 +4,10 @@ const authMiddleware = require("../middlewares/auth.middleware");
 
 const router = Router();
 
+router.use(authMiddleware);
+
+router.get("/", getWorkspaces);
 router.post("/", createWorkspace);
-router.get("/", authMiddleware, getWorkspaces);
 router.get("/:id", getWorkspaceDetails);
 router.patch("/:id", updateWorkspaceDetails);
 router.delete(":id", deleteWorkspace);

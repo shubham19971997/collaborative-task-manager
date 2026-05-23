@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import {getUserWorkspaces} from '../services/workspaces.service';
+import * as workspaceService from "../services/workspaces.service";
 
 
 export const getWorkspaces = async(req: Request, res:Response) => {
     try{
 
         const userId = req.user?.userId;
-        const workspaces = await getUserWorkspaces(userId);
+        const workspaces = await workspaceService.getUserWorkspaces(userId);
 
         return res.status(200).json({
             success: true,
@@ -18,7 +18,20 @@ export const getWorkspaces = async(req: Request, res:Response) => {
         });
       }
 };
-export const createWorkspace = () => {};
+
+export async function createWorkspace(req: Request, res: Response) {
+  const workspace = await workspaceService.createWorkspace(
+    req.user!.id,
+    req.body
+  );
+
+  res.status(201).json({
+    data:    workspace,
+    message: "Workspace created successfully",
+  });
+}
+
+
 export const getWorkspaceDetails = () => {};
 export const updateWorkspaceDetails = () => {};
 export const deleteWorkspace = () => {};
