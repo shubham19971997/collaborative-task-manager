@@ -4,8 +4,7 @@ import * as workspaceService from "../services/workspaces.service";
 
 export const getWorkspaces = async(req: Request, res:Response) => {
     try{
-
-        const userId = req.user?.userId;
+        const userId = req.user.id;
         const workspaces = await workspaceService.getUserWorkspaces(userId);
 
         return res.status(200).json({
@@ -20,8 +19,9 @@ export const getWorkspaces = async(req: Request, res:Response) => {
 };
 
 export async function createWorkspace(req: Request, res: Response) {
+
   const workspace = await workspaceService.createWorkspace(
-    req.user!.id,
+    req.body.user.id,
     req.body
   );
 

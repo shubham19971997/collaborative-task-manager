@@ -1,10 +1,10 @@
 import { Router } from "express";
 import {getWorkspaces, createWorkspace, getWorkspaceDetails, updateWorkspaceDetails, deleteWorkspace, inviteUserToWorkspace, updateWorkspaceMember, deleteWorkspaceMember} from '../controllers/workspaces.controller'
-const authMiddleware = require("../middlewares/auth.middleware");
+// const authMiddleware = require("../middlewares/auth.middleware");
 
 const router = Router();
 
-router.use(authMiddleware);
+// router.use(authMiddleware);
 
 router.get("/", getWorkspaces);
 router.post("/", createWorkspace);

@@ -1,7 +1,6 @@
 import { getMemberships } from "../repositories/memberRepository";
 import prisma from "../prisma/prisma";
 import { Role } from "@prisma/client";
-import { slugify } from "zod/v4/core/util.cjs";
 
 export const getUserWorkspaces = async(userId: string) =>{
 
@@ -26,25 +25,23 @@ export const getUserWorkspaces = async(userId: string) =>{
 
 export async function createWorkspace(
     userId: string,
-    // input: CreateWorkspaceInput
+    body: any
   ) {
-    const slug = input.slug ?? slugify(input.name);
+    const slug = body.name;
  
     const existing = await prisma.workspace.findUnique({
       where:  { slug },
-      select: { id: true },       // select minimum — we only need to know it exists
+      select: { id: true },
     });
   
     if (existing) {
-
         throw new Error(`The slug "${slug}" is already taken. Try a different name or provide a custom slug.`
         );
-
     }
 
     const workspace = await prisma.workspace.create({
       data: {
-        name: input.name,
+        name: body.name,
         slug,
         members: {
           create: {
@@ -56,7 +53,7 @@ export async function createWorkspace(
 
       include: {
         members: {
-          where:   { userId },         // only include the caller's membership
+          where:   { userId },
           include: {
             user: {
               select: {
