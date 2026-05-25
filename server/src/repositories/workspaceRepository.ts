@@ -37,3 +37,7 @@ export const createNewWorkspace = async(body:any,slug:string,userId:any) => awai
       },
     },
   });
+
+  export const findWorkspace = async(workspaceId:string) => await prisma.workspace.findUnique({
+    where:  { id: workspaceId },
+  })

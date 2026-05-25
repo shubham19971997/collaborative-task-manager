@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
 import * as workspaceService from "../services/workspaces.service";
 
-
 export const getWorkspaces = async(req: Request, res:Response) => {
     try{
-        const userId = req.user.id;
+        const userId = req.body.id;
         const workspaces = await workspaceService.getUserWorkspaces(userId);
 
         return res.status(200).json({
@@ -32,7 +31,28 @@ export async function createWorkspace(req: Request, res: Response) {
 }
 
 
-export const getWorkspaceDetails = () => {};
+export const getWorkspaceDetails = async(req: Request, res: Response) => {
+  try{
+    const workspaceId = req.params.id;
+
+    if (typeof workspaceId !== "string") {
+      throw new Error("workspaceId must be a string");
+    }
+
+    const workspaceDetails = await workspaceService.getWorkspaceDetails(workspaceId);
+
+    return res.status(200).json({
+        success: true,
+        data: workspaceDetails,
+      });
+    
+  } catch (error: any) {
+    res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
 export const updateWorkspaceDetails = () => {};
 export const deleteWorkspace = () => {};
 export const inviteUserToWorkspace = () => {};
