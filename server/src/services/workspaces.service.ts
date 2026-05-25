@@ -1,15 +1,12 @@
 import { getMemberships } from "../repositories/memberRepository";
-import prisma from "../prisma/prisma";
-import { Role } from "@prisma/client";
+import {isWorkspaceExist, createNewWorkspace} from "../repositories/workspaceRepository"
 
 export const getUserWorkspaces = async(userId: string) =>{
 
     const memberships = await getMemberships(userId);
-
     if(!memberships){
         throw new Error('Invalid userId, Please check again')
     }
-
     const workspaces = memberships.map((m) => ({
         id: m.workspace.id,
         name: m.workspace.name,
@@ -18,7 +15,6 @@ export const getUserWorkspaces = async(userId: string) =>{
         createdAt: m.workspace.createdAt,
         updatedAt: m.workspace.updatedAt
       }));
-
     return workspaces;
 
 }
@@ -29,47 +25,14 @@ export async function createWorkspace(
   ) {
     const slug = body.name;
  
-    const existing = await prisma.workspace.findUnique({
-      where:  { slug },
-      select: { id: true },
-    });
+    const existing = await isWorkspaceExist(slug)
   
     if (existing) {
         throw new Error(`The slug "${slug}" is already taken. Try a different name or provide a custom slug.`
         );
     }
 
-    const workspace = await prisma.workspace.create({
-      data: {
-        name: body.name,
-        slug,
-        members: {
-          create: {
-            userId,
-            role: Role.OWNER,
-          },
-        },
-      },
-
-      include: {
-        members: {
-          where:   { userId },
-          include: {
-            user: {
-              select: {
-                id:        true,
-                name:      true,
-                email:     true,
-                avatarUrl: true,
-              },
-            },
-          },
-        },
-        _count: {
-          select: { boards: true, members: true },
-        },
-      },
-    });
+    const workspace = await createNewWorkspace(body,slug,userId)
   
     return workspace;
 }
