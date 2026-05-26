@@ -6,6 +6,7 @@ export const isWorkspaceExist = async(slug:string) => await prisma.workspace.fin
     select: { id: true },
   });
 
+  
 export const createNewWorkspace = async(body:any,slug:string,userId:any) => await prisma.workspace.create({
     data: {
       name: body.name,

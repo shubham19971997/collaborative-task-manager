@@ -2,7 +2,6 @@ import { getMemberships } from "../repositories/memberRepository";
 import {isWorkspaceExist, createNewWorkspace, findWorkspace} from "../repositories/workspaceRepository"
 
 export const getUserWorkspaces = async(userId: string) =>{
-
     const memberships = await getMemberships(userId);
     if(!memberships){
         throw new Error('Invalid userId, Please check again')
@@ -15,6 +14,7 @@ export const getUserWorkspaces = async(userId: string) =>{
         createdAt: m.workspace.createdAt,
         updatedAt: m.workspace.updatedAt
       }));
+
     return workspaces;
 }
 
@@ -29,6 +29,7 @@ export async function createWorkspace(
         throw new Error(`The slug "${slug}" is already taken. Try a different name or provide a custom slug.`
         );
     }
+
     const workspace = await createNewWorkspace(body,slug,userId)
     return workspace;
 }
@@ -41,7 +42,15 @@ export const getWorkspaceDetails = async(workspaceId:string) =>{
     );
   }
 
-  console.log("checking for workspace data", workspaceDetails)
-
   return workspaceDetails;
+}
+
+export const updateWorkspaceDetails = async(workspaceId: string, body:any) =>{
+  const workspace = await findWorkspace(workspaceId);
+
+  if(!workspace) {
+    throw new Error(`Workspace with this id "${workspaceId}" does not exist`
+    );
+  }
+
 }

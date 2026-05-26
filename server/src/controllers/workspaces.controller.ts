@@ -18,16 +18,21 @@ export const getWorkspaces = async(req: Request, res:Response) => {
 };
 
 export async function createWorkspace(req: Request, res: Response) {
+  try{
+    const workspace = await workspaceService.createWorkspace(
+      req.body.user.id,
+      req.body
+    );
 
-  const workspace = await workspaceService.createWorkspace(
-    req.body.user.id,
-    req.body
-  );
-
-  res.status(201).json({
-    data:    workspace,
-    message: "Workspace created successfully",
-  });
+    res.status(201).json({
+      data:    workspace,
+      message: "Workspace created successfully",
+    });
+  } catch (error: any) {
+    res.status(400).json({
+      message: error.message,
+    });
+  }
 }
 
 
@@ -53,7 +58,29 @@ export const getWorkspaceDetails = async(req: Request, res: Response) => {
   }
 };
 
-export const updateWorkspaceDetails = () => {};
+export const updateWorkspaceDetails = async(req: Request, res: Response) => {
+  try{
+
+    const workspaceId = req.params.id;
+    const body = req.body;
+
+    if (typeof workspaceId !== "string") {
+      throw new Error("workspaceId must be a string");
+    }
+    const updatedWorkspace = await workspaceService.updateWorkspaceDetails(workspaceId, body)
+
+    res.json({
+      data:    updatedWorkspace,
+      message: "Workspace updated successfully",
+    });
+
+  } catch (error: any) {
+    res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
 export const deleteWorkspace = () => {};
 export const inviteUserToWorkspace = () => {};
 export const updateWorkspaceMember = () => {};
