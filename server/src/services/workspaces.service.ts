@@ -1,5 +1,5 @@
 import { getMemberships } from "../repositories/memberRepository";
-import {isWorkspaceExist, createNewWorkspace, findWorkspace} from "../repositories/workspaceRepository"
+import {isWorkspaceExist, createNewWorkspace, findWorkspace, updateWorkspaceDetailsRepo} from "../repositories/workspaceRepository"
 
 export const getUserWorkspaces = async(userId: string) =>{
     const memberships = await getMemberships(userId);
@@ -46,6 +46,8 @@ export const getWorkspaceDetails = async(workspaceId:string) =>{
 }
 
 export const updateWorkspaceDetails = async(workspaceId: string, body:any) =>{
+  
+  const slug = body.name;
   const workspace = await findWorkspace(workspaceId);
 
   if(!workspace) {
@@ -53,4 +55,12 @@ export const updateWorkspaceDetails = async(workspaceId: string, body:any) =>{
     );
   }
 
+  if (slug) {
+     const existing = await isWorkspaceExist(slug)
+    if (existing) throw new Error(`Slug "${slug}" is already taken`);
+  }
+
+  const updatedWorkspace = await updateWorkspaceDetailsRepo(workspaceId,body);
+
+  return updatedWorkspace
 }
