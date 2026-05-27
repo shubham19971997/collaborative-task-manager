@@ -81,7 +81,28 @@ export const updateWorkspaceDetails = async(req: Request, res: Response) => {
   }
 };
 
-export const deleteWorkspace = () => {};
+export const deleteWorkspace = async(req: Request, res: Response) => {
+  try{
+    const workspaceId = req.params.id;
+
+    if (typeof workspaceId !== "string") {
+      throw new Error("workspaceId must be a string");
+    }
+
+    const workspaceDetails = await workspaceService.deleteWorkspace(workspaceId);
+
+    return res.status(200).json({
+        success: true,
+        message: "Workspace deleted successfully",
+        data: workspaceDetails,
+      });
+    
+  } catch (error: any) {
+    res.status(400).json({
+      message: error.message,
+    });
+  }
+};
 export const inviteUserToWorkspace = () => {};
 export const updateWorkspaceMember = () => {};
 export const deleteWorkspaceMember = () =>{};

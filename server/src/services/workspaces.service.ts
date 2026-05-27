@@ -1,5 +1,5 @@
 import { getMemberships } from "../repositories/memberRepository";
-import {isWorkspaceExist, createNewWorkspace, findWorkspace, updateWorkspaceDetailsRepo} from "../repositories/workspaceRepository"
+import {isWorkspaceExist, createNewWorkspace, findWorkspace, updateWorkspaceDetailsRepo, deleteWorkspaceRepo} from "../repositories/workspaceRepository"
 
 export const getUserWorkspaces = async(userId: string) =>{
     const memberships = await getMemberships(userId);
@@ -46,7 +46,6 @@ export const getWorkspaceDetails = async(workspaceId:string) =>{
 }
 
 export const updateWorkspaceDetails = async(workspaceId: string, body:any) =>{
-  
   const slug = body.name;
   const workspace = await findWorkspace(workspaceId);
 
@@ -63,4 +62,20 @@ export const updateWorkspaceDetails = async(workspaceId: string, body:any) =>{
   const updatedWorkspace = await updateWorkspaceDetailsRepo(workspaceId,body);
 
   return updatedWorkspace
+}
+
+export const deleteWorkspace = async(workspaceId: string) =>{
+
+  const workspace = await findWorkspace(workspaceId);
+
+  if(!workspace) {
+    throw new Error(`Workspace with this id "${workspaceId}" does not exist`
+    );
+  }
+  
+  const deleted = await deleteWorkspaceRepo(workspaceId)
+
+  if(!deleted){
+    throw new Error(`Workspace with this id "${workspaceId}" can't be deleted`)
+  }
 }

@@ -53,3 +53,7 @@ export const createNewWorkspace = async(body:any,slug:string,userId:any) => awai
       _count: { select: { members: true, boards: true } },
     },
   })
+
+  export const deleteWorkspaceRepo = async(workspaceId: string) => await prisma.workspace.delete({
+    where: {id: workspaceId}
+  })
