@@ -46,36 +46,36 @@ export const getWorkspaceDetails = async(workspaceId:string) =>{
 }
 
 export const updateWorkspaceDetails = async(workspaceId: string, body:any) =>{
-  const slug = body.name;
-  const workspace = await findWorkspace(workspaceId);
 
+  const workspace = await findWorkspace(workspaceId);
   if(!workspace) {
     throw new Error(`Workspace with this id "${workspaceId}" does not exist`
     );
   }
 
+  const slug = body.name;
   if (slug) {
      const existing = await isWorkspaceExist(slug)
     if (existing) throw new Error(`Slug "${slug}" is already taken`);
   }
 
   const updatedWorkspace = await updateWorkspaceDetailsRepo(workspaceId,body);
-
   return updatedWorkspace
+
 }
 
 export const deleteWorkspace = async(workspaceId: string) =>{
 
   const workspace = await findWorkspace(workspaceId);
-
   if(!workspace) {
     throw new Error(`Workspace with this id "${workspaceId}" does not exist`
     );
   }
-  
-  const deleted = await deleteWorkspaceRepo(workspaceId)
 
+  const deleted = await deleteWorkspaceRepo(workspaceId)
   if(!deleted){
     throw new Error(`Workspace with this id "${workspaceId}" can't be deleted`)
   }
 }
+
+export const inviteMember = async(workspaceId: string, body: any) =>{}
