@@ -57,3 +57,28 @@ export const createNewWorkspace = async(body:any,slug:string,userId:any) => awai
   export const deleteWorkspaceRepo = async(workspaceId: string) => await prisma.workspace.delete({
     where: {id: workspaceId}
   })
+
+  export const existingWorkspaceMember =async(workspaceId:string,invitee:any)=> await prisma.member.findUnique({
+    where:{
+      userId_workspaceId:{
+        userId: invitee.id,
+        workspaceId
+      }
+    }
+  })
+
+  export const createWorkspaceMember = async(workspaceId:string, invitee:any, body:any) => await prisma.member.create({
+    data:{
+      userId: invitee.id,
+      workspaceId,
+      role: body.role ?? "MEMBER"
+    },
+    include: {
+      user: {
+        select: { id: true, name: true, email: true, avatarUrl: true },
+      },
+      workspace: {
+        select: { id: true, name: true, slug: true },
+      },
+    },
+  })

@@ -1,6 +1,7 @@
 import { getMemberships } from "../repositories/memberRepository";
-import {isWorkspaceExist, createNewWorkspace, findWorkspace, updateWorkspaceDetailsRepo, deleteWorkspaceRepo} from "../repositories/workspaceRepository"
-
+import {isWorkspaceExist, createNewWorkspace, findWorkspace, updateWorkspaceDetailsRepo, existingWorkspaceMember, deleteWorkspaceRepo, createWorkspaceMember} from "../repositories/workspaceRepository"
+import { existingUser } from "../repositories/userRepository";
+ 
 export const getUserWorkspaces = async(userId: string) =>{
     const memberships = await getMemberships(userId);
     if(!memberships){
@@ -78,4 +79,32 @@ export const deleteWorkspace = async(workspaceId: string) =>{
   }
 }
 
-export const inviteMember = async(workspaceId: string, body: any) =>{}
+export const inviteMember = async(workspaceId: string, body: any) =>{
+
+  const workspace = await findWorkspace(workspaceId);
+  if(!workspace) {
+    throw new Error(`Workspace with this id "${workspaceId}" does not exist`
+    );
+  }
+
+  const invitee = await existingUser(body.email);
+  if (!invitee) {
+    throw new Error(`No account found with email ${body.email}. They need to register first.`);
+  }
+
+  // if(invitee.id === "current userId"){
+  //   throw new Error(`No account found with email ${body.email}. They need to register first.`);
+  // }
+
+  const existingMember = await existingWorkspaceMember(workspaceId, invitee);
+  if (existingMember) {
+    throw Error(
+      `${invitee.name} is already a member of this workspace`
+    );
+  }
+
+  const member = createWorkspaceMember(workspaceId, invitee, body)
+
+  return member
+
+}
