@@ -104,7 +104,8 @@ export const inviteMember = async(workspaceId: string, body: any) =>{
   }
 
   const member = createWorkspaceMember(workspaceId, invitee, body)
-
   return member
 
 }
+
+export const updateWorkspaceMember = async() =>{}
