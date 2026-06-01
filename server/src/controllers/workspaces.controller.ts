@@ -124,16 +124,19 @@ export const inviteUserToWorkspace = async(req: Request, res: Response) => {
 export const updateWorkspaceMember = async(req: Request, res: Response) => {
 
   const workspaceId = req.params.id;
+  const userId = req.params.userId;
+  const body = req.body;
 
-  if (typeof workspaceId !== "string") {
-    throw new Error("workspaceId must be a string");
+  if (typeof workspaceId !== "string" || typeof userId !== "string") {
+    throw new Error("workspaceId and userId both must be a string");
   }
 
-  const updatedMember = await workspaceService.updateWorkspaceMember()
+  const updatedMember = await workspaceService.updateWorkspaceMember(workspaceId, userId, body)
 
   res.status(201).json({
     data:    updatedMember,
     message: `Members of the workspace has been updated`,
   });
 };
+
 export const deleteWorkspaceMember = () =>{};

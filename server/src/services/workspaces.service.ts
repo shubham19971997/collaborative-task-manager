@@ -1,5 +1,5 @@
 import { getMemberships } from "../repositories/memberRepository";
-import {isWorkspaceExist, createNewWorkspace, findWorkspace, updateWorkspaceDetailsRepo, existingWorkspaceMember, deleteWorkspaceRepo, createWorkspaceMember} from "../repositories/workspaceRepository"
+import {isWorkspaceExist, findMember, createNewWorkspace, findWorkspace, updateWorkspaceDetailsRepo, existingWorkspaceMember, deleteWorkspaceRepo, createWorkspaceMember, updateMember} from "../repositories/workspaceRepository"
 import { existingUser } from "../repositories/userRepository";
  
 export const getUserWorkspaces = async(userId: string) =>{
@@ -108,4 +108,31 @@ export const inviteMember = async(workspaceId: string, body: any) =>{
 
 }
 
-export const updateWorkspaceMember = async() =>{}
+export const updateWorkspaceMember = async(workspaceId:string, userId:string, body:any) =>{
+  
+  const workspace = await findWorkspace(workspaceId);
+  if(!workspace) {
+    throw new Error(`Workspace with this id "${workspaceId}" does not exist`
+    );
+  }
+
+  const targetMember = await findMember(workspaceId, userId);
+
+  if (!targetMember) throw new Error("Member not found");
+
+  if (userId === "currentuserId") {
+    throw new Error("You cannot change your own role")
+  }
+
+  if (targetMember.role === "OWNER") {
+    throw new Error("Cannot change the role of a workspace OWNER");
+  }
+
+  if (body.role === "OWNER") {
+    throw new Error("Cannot assign OWNER role. Use the transfer ownership endpoint instead");
+  }
+
+  const updatedMember = updateMember(workspaceId, userId, body);
+  return updatedMember;
+
+}

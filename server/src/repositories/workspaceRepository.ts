@@ -82,3 +82,30 @@ export const createNewWorkspace = async(body:any,slug:string,userId:any) => awai
       },
     },
   })
+
+  export const findMember = async(workspaceId: string, userId: string) => await prisma.member.findUnique({
+    where: {
+      userId_workspaceId: {
+        userId: userId,
+        workspaceId,
+      },
+    },
+    include: {
+      user: { select: { id: true, name: true, email: true } },
+    },
+  });
+
+  export const updateMember = async(workspaceId: string, userId: string, body:any) => await prisma.member.update({
+    where: {
+      userId_workspaceId: {
+        userId:      userId,
+        workspaceId,
+      },
+    },
+    data: { role: body.role },
+    include: {
+      user: {
+        select: { id: true, name: true, email: true, avatarUrl: true },
+      },
+    },
+  });
