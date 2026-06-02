@@ -139,4 +139,19 @@ export const updateWorkspaceMember = async(req: Request, res: Response) => {
   });
 };
 
-export const deleteWorkspaceMember = () =>{};
+export const deleteWorkspaceMember = async(req: Request, res: Response) => {
+
+  const workspaceId = req.params.id;
+  const userId = req.params.userId;
+  const body = req.body;
+
+  if (typeof workspaceId !== "string" || typeof userId !== "string") {
+    throw new Error("workspaceId and userId both must be a string");
+  }
+
+  const deletedMember = await workspaceService.removeWorkspaceMember(workspaceId, userId)
+
+  res.status(201).json({
+    message: `${deletedMember.name} has been removed from the workspace`,
+  });
+};

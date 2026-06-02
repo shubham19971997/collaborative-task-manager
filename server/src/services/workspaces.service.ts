@@ -1,5 +1,5 @@
 import { getMemberships } from "../repositories/memberRepository";
-import {isWorkspaceExist, findMember, createNewWorkspace, findWorkspace, updateWorkspaceDetailsRepo, existingWorkspaceMember, deleteWorkspaceRepo, createWorkspaceMember, updateMember} from "../repositories/workspaceRepository"
+import {isWorkspaceExist, deleteWorkspaceMember, findMember, createNewWorkspace, findWorkspace, updateWorkspaceDetailsRepo, existingWorkspaceMember, deleteWorkspaceRepo, createWorkspaceMember, updateMember} from "../repositories/workspaceRepository"
 import { existingUser } from "../repositories/userRepository";
  
 export const getUserWorkspaces = async(userId: string) =>{
@@ -134,5 +134,26 @@ export const updateWorkspaceMember = async(workspaceId:string, userId:string, bo
 
   const updatedMember = updateMember(workspaceId, userId, body);
   return updatedMember;
+
+}
+
+export const removeWorkspaceMember = async(workspaceId: string, userId: string) =>{
+
+  const workspace = await findWorkspace(workspaceId);
+  if(!workspace) {
+    throw new Error(`Workspace with this id "${workspaceId}" does not exist`
+    );
+  }
+
+  const targetMember = await findMember(workspaceId, userId);
+  if (!targetMember) throw new Error("Member not found");
+
+  if (targetMember.role === "OWNER") {
+    throw new Error("Cannot remove the workspace OWNER");
+  }
+
+  await deleteWorkspaceMember(workspaceId, userId)
+
+  return targetMember.user
 
 }

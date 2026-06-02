@@ -109,3 +109,12 @@ export const createNewWorkspace = async(body:any,slug:string,userId:any) => awai
       },
     },
   });
+
+  export const deleteWorkspaceMember = async(workspaceId: string, userId: string) => await prisma.member.delete({
+    where: {
+      userId_workspaceId: {
+        userId: userId,
+        workspaceId,
+      },
+    },
+  })
