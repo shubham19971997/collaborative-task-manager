@@ -35,3 +35,29 @@ export const createNewBoard = async(
      return newBoard;
      
 }
+
+export const boardDetail = async(boardId:string) =>{
+
+     const boardDetail = boardRepository?.boardDetail(boardId);
+     if(!boardDetail){
+          throw new Error(`Internal server error`)  
+     }
+
+     return boardDetail;
+}
+
+export const updateBoardData = async(
+     boardId:string,
+     data: any) =>{
+        const updatedBoard = await boardRepository?.updateBoard(boardId, data);
+        return updatedBoard;  
+}
+
+export const deleteBoard = async(boardId:string) =>{
+
+     const boardDetail = boardRepository?.deleteBoard(boardId);
+     if(!boardDetail){
+          throw new Error(`Internal server error`)  
+     }
+     return boardDetail;
+}

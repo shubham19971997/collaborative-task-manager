@@ -5,7 +5,7 @@ import * as boardService from "../services/boards.service";
 export const getBoards = async(req:Request, res:Response)=>{
     try{
 
-      const {workspaceId} = req.params;
+      const workspaceId = req.params.id;
 
       if (!workspaceId || typeof workspaceId !== 'string') {
         return res.status(400).json({ error: "workspaceId query parameter is required." });
@@ -52,9 +52,21 @@ export const createBoard = async(req:Request, res:Response)=>{
     }
 };
 
-export const getBoardDetail = (req:Request, res:Response)=>{
+export const getBoardDetail = async(req:Request, res:Response)=>{
   try{
 
+    const boardId = req.params.id;
+
+    if (!boardId || typeof boardId !== 'string') {
+      return res.status(400).json({ error: "boardId query parameter is required." });
+    }
+
+    const boardData = await boardService?.boardDetail(boardId);
+
+    res.json({
+      data:    boardData,
+      message: "Fetched all of boards successfully",
+    });
   
   } catch (error: any) {
     res.status(400).json({
@@ -66,6 +78,20 @@ export const getBoardDetail = (req:Request, res:Response)=>{
 export const updateBoard = (req:Request, res:Response)=>{
   try{
 
+    const boardId = req.params.id;
+
+    const {title, description, coverColor} = req.body;
+
+    if (!boardId || typeof boardId !== 'string') {
+      return res.status(400).json({ error: "boardId query parameter is required." });
+    }
+
+    const updatedBoard = boardService?.updateBoardData(boardId, {title, description, coverColor});
+
+    res.json({
+      data:    updatedBoard,
+      message: "Board data updated successfully",
+    });
   
   } catch (error: any) {
     res.status(400).json({
@@ -74,10 +100,19 @@ export const updateBoard = (req:Request, res:Response)=>{
   }
 };
 
-export const deleteBoard = (req:Request, res:Response)=>{
+export const deleteBoard = async(req:Request, res:Response)=>{
   try{
+    const boardId = req.params.id;
 
-  
+    if (!boardId || typeof boardId !== 'string') {
+      return res.status(400).json({ error: "boardId query parameter is required." });
+    }
+
+    await boardService?.deleteBoard(boardId);
+    
+    res.json({
+      message: "Board delted successfully",
+    });
   } catch (error: any) {
     res.status(400).json({
       message: error.message,
