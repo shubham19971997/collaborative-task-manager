@@ -1,9 +1,6 @@
 import bcrypt from "bcrypt";
 import prisma from "../prisma/prisma";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "../utils/jwt";
+import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
 import { existingUser } from "../repositories/userRepository";
 import jwt from "jsonwebtoken";
 
@@ -12,7 +9,6 @@ export const registerUser = async (
   name: string,
   password: string
 ) => {
-
   if (await existingUser(email)) {
     throw new Error("User already exists");
   }
@@ -41,16 +37,15 @@ export const registerUser = async (
   return { user, accessToken, refreshToken };
 };
 
-export const logInUser = async(email: string, password: string) =>{
-
+export const logInUser = async (email: string, password: string) => {
   const user = await existingUser(email);
-  if(!user || !user.passwordHash){
-    throw new Error("Invalid credentials")
+  if (!user || !user.passwordHash) {
+    throw new Error("Invalid credentials");
   }
 
   const isMatch = await bcrypt.compare(password, user.passwordHash);
-  if(!isMatch){
-    throw new Error("Invalid credentials")
+  if (!isMatch) {
+    throw new Error("Invalid credentials");
   }
 
   const accessToken = generateAccessToken(user.id);
@@ -64,15 +59,12 @@ export const logInUser = async(email: string, password: string) =>{
     },
   });
   return { accessToken, refreshToken, user };
-
-}
+};
 
 export const refreshAccessToken = async (token: string) => {
-  
-  const decoded = jwt.verify(
-    token,
-    process.env.JWT_REFRESH_SECRET!
-  ) as { userId: string };
+  const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET!) as {
+    userId: string;
+  };
 
   const tokens = await prisma.refreshToken.findMany({
     where: {

@@ -23,31 +23,26 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
-export const login = async (req: Request, res: Response) =>{
-  try{
+export const login = async (req: Request, res: Response) => {
+  try {
     const parsed = logInSchema.parse(req.body);
 
-    const result = await logInUser(
-      parsed.email,
-      parsed.password
-    )
+    const result = await logInUser(parsed.email, parsed.password);
 
     const { accessToken, refreshToken } = result;
     setRefreshCookie(res, refreshToken);
 
     return res.status(200).json({
-      success: 'true',
+      success: "true",
       message: "Login successful",
-      accessToken
-    })
-
-
-  }catch(error:any){
+      accessToken,
+    });
+  } catch (error: any) {
     res.status(400).json({
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
+};
 
 export const refresh = async (req: Request, res: Response) => {
   try {
@@ -78,4 +73,4 @@ export const logout = async (req: Request, res: Response) => {
 
   res.json({ message: "Logged out" });
 };
-export const me = () =>{}
+export const me = () => {};

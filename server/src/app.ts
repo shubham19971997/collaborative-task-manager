@@ -3,9 +3,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes";
 import cookieParser from "cookie-parser";
-import workspaceRoutes from './routes/workspaces.routes';
-import boardRoutes from './routes/boards.routes';
-import columnRoutes from './routes/columns.routes';
+import workspaceRoutes from "./routes/workspaces.routes";
+import boardRoutes from "./routes/boards.routes";
+import columnRoutes from "./routes/columns.routes";
 
 dotenv.config();
 const app = express();
@@ -22,9 +22,9 @@ const PORT = process.env.PORT || 3001;
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
-app.use('/api/workspaces', workspaceRoutes)
-app.use('/api/boards', boardRoutes)
-app.use('/api/columns', columnRoutes)
+app.use("/api/workspaces", workspaceRoutes);
+app.use("/api/boards", boardRoutes);
+app.use("/api/columns", columnRoutes);
 // app.use('/api/cards',      cardRoutes)
 
 app.listen(PORT, () => {
