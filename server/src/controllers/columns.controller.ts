@@ -3,8 +3,37 @@ import * as columnServices from "../services/columns.service";
 
 export const getColumn = async (req: Request, res: Response) => {
   try {
+    const {boardId} = req.body;
+
+    if (!boardId || typeof boardId !== 'string') {
+      return res.status(400).json({ error: "boardId query parameter is required." });
+    }
+
+    const columns = await columnServices.getColumnsByBoardId(boardId);
+    
     res.json({
-      data: {},
+      data: columns,
+      message: "Fetched all of columns successfully",
+    });
+  } catch (error: any) {
+    res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
+export const getColumnByID = async (req: Request, res: Response) => {
+  try {
+    const {id} =  req.params
+
+    if (!id || typeof id !== 'string') {
+      return res.status(400).json({ error: "boardId query parameter is required." });
+    }
+
+    const column = await columnServices.getColumnById(id)
+
+    res.json({
+      data: column,
       message: "Fetched all of columns successfully",
     });
   } catch (error: any) {
