@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import * as columnServices from "../services/columns.service";
+import { string } from "zod";
 
 export const getColumn = async (req: Request, res: Response) => {
   try {
@@ -45,8 +46,19 @@ export const getColumnByID = async (req: Request, res: Response) => {
 
 export const createColumn = async (req: Request, res: Response) => {
   try {
+
+    const {title, boardId, position} = req.body;
+
+    if (!title || !boardId || position === undefined) {
+      return res.status(400).json({ 
+        error: "title, boardId, and position are required." 
+      });
+    }
+
+    const newColumn = await columnServices.createColumn(title, boardId, position)
+
     res.json({
-      data: {},
+      data: newColumn,
       message: "Created new column successfully",
     });
   } catch (error: any) {
@@ -58,8 +70,19 @@ export const createColumn = async (req: Request, res: Response) => {
 
 export const updateColumn = async (req: Request, res: Response) => {
   try {
-    res.json({
-      data: {},
+    const {id} = req.params;
+    const {title, position} = req.body;
+
+    if ( id !== 'string') {
+      return res.status(400).json({ 
+        error: "title, boardId, and position are required." 
+      });
+    }
+
+    const updatedColumn = await columnServices.updateColumnById(id, title, position);
+
+    res.status(200).json({
+      data: updatedColumn,
       message: "Updated the column successfully",
     });
   } catch (error: any) {
@@ -71,8 +94,16 @@ export const updateColumn = async (req: Request, res: Response) => {
 
 export const deleteColumn = async (req: Request, res: Response) => {
   try {
+    const {id} = req.params;
+
+    if ( id !== 'string') {
+      return res.status(400).json({ 
+        error: "title, boardId, and position are required." 
+      });
+    }
+    await columnServices.deleteColumnById(id);
+
     res.json({
-      data: {},
       message: "Deleted the column successfully",
     });
   } catch (error: any) {

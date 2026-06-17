@@ -22,3 +22,23 @@ export const getColumnById = async (columnId: string) => {
     },
   });
 };
+
+export const createColumn = async (title: string, boardId:string, position:number) => await prisma.column.create({
+  data: {
+    title: title,
+    boardId: boardId,
+    position: position,
+  }
+});
+
+export const updateColumn = async (title: string, boardId:string, position:number) => await prisma.column.update({
+  where: {id: boardId},
+  data:{
+    ...(title !== undefined && { title: title }),
+      ...(position !== undefined && { position: position }),
+  }
+})
+
+export const deleteColumn = async(id:string) => await prisma.column.delete({
+  where: {id: id},
+})
