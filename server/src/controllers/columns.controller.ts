@@ -4,14 +4,16 @@ import { string } from "zod";
 
 export const getColumn = async (req: Request, res: Response) => {
   try {
-    const {boardId} = req.body;
+    const { boardId } = req.body;
 
-    if (!boardId || typeof boardId !== 'string') {
-      return res.status(400).json({ error: "boardId query parameter is required." });
+    if (!boardId || typeof boardId !== "string") {
+      return res
+        .status(400)
+        .json({ error: "boardId query parameter is required." });
     }
 
     const columns = await columnServices.getColumnsByBoardId(boardId);
-    
+
     res.json({
       data: columns,
       message: "Fetched all of columns successfully",
@@ -25,13 +27,15 @@ export const getColumn = async (req: Request, res: Response) => {
 
 export const getColumnByID = async (req: Request, res: Response) => {
   try {
-    const {id} =  req.params
+    const { id } = req.params;
 
-    if (!id || typeof id !== 'string') {
-      return res.status(400).json({ error: "boardId query parameter is required." });
+    if (!id || typeof id !== "string") {
+      return res
+        .status(400)
+        .json({ error: "boardId query parameter is required." });
     }
 
-    const column = await columnServices.getColumnById(id)
+    const column = await columnServices.getColumnById(id);
 
     res.json({
       data: column,
@@ -46,16 +50,19 @@ export const getColumnByID = async (req: Request, res: Response) => {
 
 export const createColumn = async (req: Request, res: Response) => {
   try {
-
-    const {title, boardId, position} = req.body;
+    const { title, boardId, position } = req.body;
 
     if (!title || !boardId || position === undefined) {
-      return res.status(400).json({ 
-        error: "title, boardId, and position are required." 
+      return res.status(400).json({
+        error: "title, boardId, and position are required.",
       });
     }
 
-    const newColumn = await columnServices.createColumn(title, boardId, position)
+    const newColumn = await columnServices.createColumn(
+      title,
+      boardId,
+      position
+    );
 
     res.json({
       data: newColumn,
@@ -70,16 +77,20 @@ export const createColumn = async (req: Request, res: Response) => {
 
 export const updateColumn = async (req: Request, res: Response) => {
   try {
-    const {id} = req.params;
-    const {title, position} = req.body;
+    const { id } = req.params;
+    const { title, position } = req.body;
 
-    if ( id !== 'string') {
-      return res.status(400).json({ 
-        error: "title, boardId, and position are required." 
+    if (id !== "string") {
+      return res.status(400).json({
+        error: "title, boardId, and position are required.",
       });
     }
 
-    const updatedColumn = await columnServices.updateColumnById(id, title, position);
+    const updatedColumn = await columnServices.updateColumnById(
+      id,
+      title,
+      position
+    );
 
     res.status(200).json({
       data: updatedColumn,
@@ -94,11 +105,11 @@ export const updateColumn = async (req: Request, res: Response) => {
 
 export const deleteColumn = async (req: Request, res: Response) => {
   try {
-    const {id} = req.params;
+    const { id } = req.params;
 
-    if ( id !== 'string') {
-      return res.status(400).json({ 
-        error: "title, boardId, and position are required." 
+    if (id !== "string") {
+      return res.status(400).json({
+        error: "title, boardId, and position are required.",
       });
     }
     await columnServices.deleteColumnById(id);
